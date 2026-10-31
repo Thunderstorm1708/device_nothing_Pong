@@ -5,6 +5,7 @@
 #
 
 DEVICE_PATH := device/nothing/Pong
+KERNEL_PREBUILT_DIR := device/nothing/Pong-kernel
 
 # A/B
 AB_OTA_PARTITIONS += \
@@ -29,20 +30,16 @@ TARGET_CPU_ABI := arm64-v8a
 TARGET_CPU_VARIANT := generic
 TARGET_CPU_VARIANT_RUNTIME := kryo300
 
-# Audio
+# Audio (AIDL, sm8450-6.6 PAL/AGM)
+# MCS stays off: the stock libmcs predates the ar_log ABI of this PAL.
 AUDIO_FEATURE_ENABLED_DLKM := true
 AUDIO_FEATURE_ENABLED_EXTENDED_COMPRESS_FORMAT := true
-AUDIO_FEATURE_ENABLED_GEF_SUPPORT := true
 AUDIO_FEATURE_ENABLED_GKI := true
 AUDIO_FEATURE_ENABLED_INSTANCE_ID := true
-AUDIO_FEATURE_ENABLED_PAL_HIDL := true
-AUDIO_FEATURE_ENABLED_PROXY_DEVICE := true
-AUDIO_FEATURE_ENABLED_SSR := true
 AUDIO_FEATURE_ENABLED_SVA_MULTI_STAGE := true
+BOARD_SUPPORTS_OPENSOURCE_STHAL := true
 BOARD_SUPPORTS_SOUND_TRIGGER := true
 BOARD_USES_ALSA_AUDIO := true
-TARGET_PROVIDES_AUDIO_HAL := true
-TARGET_USES_QCOM_MM_AUDIO := true
 
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := taro
@@ -55,7 +52,8 @@ BOARD_RAMDISK_USE_LZ4 := true
 # DTB / DTBO
 BOARD_KERNEL_SEPARATED_DTBO := true
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
-BOARD_USES_QCOM_MERGE_DTBS_SCRIPT := true
+BOARD_PREBUILT_DTBIMAGE_DIR := $(KERNEL_PREBUILT_DIR)/dtbs
+BOARD_PREBUILT_DTBOIMAGE := $(KERNEL_PREBUILT_DIR)/dtbo.img
 
 # Display
 SOONG_CONFIG_qtidisplay_udfps := true
@@ -64,17 +62,15 @@ TARGET_SCREEN_DENSITY := 420
 # Filesystem
 TARGET_FS_CONFIG_GEN := $(DEVICE_PATH)/config.fs
 
-# HIDL
+# VINTF
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
-    $(DEVICE_PATH)/device_framework_matrix.xml \
+    $(DEVICE_PATH)/configs/vintf/phone2_vendor_framework_compatibility_matrix.xml \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml
 
-DEVICE_FRAMEWORK_MANIFEST_FILE += $(DEVICE_PATH)/framework_manifest.xml
-DEVICE_MATRIX_FILE += hardware/qcom-caf/common/compatibility_matrix.xml
+DEVICE_MATRIX_FILE := hardware/qcom-caf/common/compatibility_matrix_aidl.xml
 DEVICE_MANIFEST_FILE += \
-    $(DEVICE_PATH)/manifest.xml \
-    hardware/qcom-caf/sm8450/audio/primary-hal/configs/common/manifest_non_qmaa.xml \
-    hardware/qcom-caf/sm8450/audio/primary-hal/configs/common/manifest_non_qmaa_extn.xml
+    $(DEVICE_PATH)/configs/vintf/manifest_cape.xml \
+    hardware/qcom-caf/sm8450-6.6/audio/primary-hal/configs/parrot/manifest_audio_qti_services.xml
 
 # Kernel
 BOARD_BOOTCONFIG := \
@@ -82,49 +78,42 @@ BOARD_BOOTCONFIG := \
     androidboot.memcg=1 \
     androidboot.usbcontroller=a600000.dwc3
 
-TARGET_KERNEL_CLANG_VERSION := r563880c
-TARGET_KERNEL_CLANG_PATH := $(abspath .)/prebuilts/clang/host/linux-x86/clang-$(TARGET_KERNEL_CLANG_VERSION)
+BOARD_KERNEL_CMDLINE := msm_geni_serial.con_enabled=0 qcom_dload_mode.download_mode=0
 
 BOARD_USES_GENERIC_KERNEL_IMAGE := true
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_IMAGE_NAME := Image
 
-TARGET_KERNEL_SOURCE := kernel/nothing/sm8475
-TARGET_KERNEL_CONFIG := \
-    gki_defconfig \
-    vendor/waipio_GKI.config \
-    vendor/nothing/waipio_GKI.config \
-    vendor/debugfs.config
+# Prebuilt 6.12 GKI kernel (device/nothing/Pong-kernel).
+#
+# That repo is not a source tree: its Makefile only answers headers_install,
+# so the qcom-caf HALs compile against the uapi headers of this exact build.
+# TARGET_KERNEL_VERSION selects the "UM 5.10 upgraded to UM 6.6" HAL set
+# (hardware/qcom-caf/sm8450-6.6), the newest stack Lineage ships for taro.
+# Prebuilt kernels are refused on official build types, so build UNOFFICIAL.
+TARGET_KERNEL_SOURCE := $(KERNEL_PREBUILT_DIR)
+TARGET_KERNEL_CONFIG := prebuilt
+TARGET_KERNEL_VERSION := 6.6
+TARGET_FORCE_PREBUILT_KERNEL := true
+TARGET_PREBUILT_KERNEL := $(KERNEL_PREBUILT_DIR)/Image
 
 # Kernel modules
-BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(DEVICE_PATH)/modules.blocklist
-BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules.load))
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := $(BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE)
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules.load.vendor_boot))
-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules.load.recovery))
-BOOT_KERNEL_MODULES := $(strip $(shell cat $(DEVICE_PATH)/modules.load.recovery))
-TARGET_MODULE_ALIASES += qca6490.ko:qca_cld3_qca6490.ko
+KERNEL_MODULES_DLKM_DIR := $(KERNEL_PREBUILT_DIR)/modules/vendor_dlkm
+KERNEL_MODULES_RAMDISK_DIR := $(KERNEL_PREBUILT_DIR)/modules/vendor_ramdisk
 
-TARGET_KERNEL_EXT_MODULE_ROOT := kernel/nothing/sm8475-modules
-TARGET_KERNEL_EXT_MODULES := \
-    qcom/opensource/mmrm-driver \
-    qcom/opensource/audio-kernel \
-    qcom/opensource/camera-kernel \
-    qcom/opensource/cvp-kernel \
-    qcom/opensource/dataipa/drivers/platform/msm \
-    qcom/opensource/datarmnet/core \
-    qcom/opensource/datarmnet-ext/aps \
-    qcom/opensource/datarmnet-ext/offload \
-    qcom/opensource/datarmnet-ext/shs \
-    qcom/opensource/datarmnet-ext/perf \
-    qcom/opensource/datarmnet-ext/perf_tether \
-    qcom/opensource/datarmnet-ext/sch \
-    qcom/opensource/datarmnet-ext/wlan \
-    qcom/opensource/display-drivers/msm \
-    qcom/opensource/eva-kernel \
-    qcom/opensource/video-driver \
-    qcom/opensource/wlan/qcacld-3.0/.qca6490
+BOARD_VENDOR_KERNEL_MODULES := $(wildcard $(KERNEL_MODULES_DLKM_DIR)/*.ko)
+BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_MODULES_DLKM_DIR)/modules.load))
+BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(KERNEL_MODULES_DLKM_DIR)/modules.blocklist
+
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(wildcard $(KERNEL_MODULES_RAMDISK_DIR)/*.ko)
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_MODULES_RAMDISK_DIR)/modules.load))
+BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_MODULES_RAMDISK_DIR)/modules.load.recovery))
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := $(BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE)
+
+# The GKI protected modules (zsmalloc, zram...) must keep their signatures.
+BOARD_DO_NOT_STRIP_VENDOR_MODULES := true
+BOARD_DO_NOT_STRIP_VENDOR_RAMDISK_MODULES := true
 
 # Metadata
 BOARD_USES_METADATA_PARTITION := true
@@ -146,6 +135,7 @@ BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := erofs
 BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_USES_VENDOR_DLKMIMAGE := true
 BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := odm product system system_ext vendor vendor_dlkm
 BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 7512998464 # (BOARD_SUPER_PARTITION_SIZE - 4MB)
 BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions

@@ -12,3 +12,14 @@ allow sltntc sltntc_exec:file { rx_file_perms entrypoint };
 allow init sltntc:process transition;
 
 rw_dir_file(sltntc, proc_simulated_temp)
+
+# 6.12 kernel (from the AOSPA phone2 tree)
+binder_use(sltntc)
+binder_call(sltntc, system_app)
+binder_call(system_app, sltntc)
+allow sltntc dumpstate:binder transfer;
+hal_client_domain(sltntc, hal_health)
+r_dir_file(sltntc, sysfs_thermal)
+r_dir_file(sltntc, sysfs_batteryinfo)
+allow sltntc proc_simulated_temp:file rw_file_perms;
+get_prop(sltntc, system_prop)

@@ -32,46 +32,78 @@ PRODUCT_VIRTUAL_AB_COMPRESSION_METHOD := gz
 PRODUCT_AAPT_CONFIG := normal
 PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
-# Audio
+# Audio (AIDL, hardware/qcom-caf/sm8450-6.6)
 PRODUCT_PACKAGES += \
-    android.hardware.audio@7.0-impl \
-    android.hardware.audio.effect@7.0-impl \
-    android.hardware.audio.service \
-    android.hardware.bluetooth.audio-impl \
-    android.hardware.soundtrigger@2.3-impl \
     audio.bluetooth.default \
     audio.r_submix.default \
     audio.usb.default \
     audioadsprpcd \
+    audiohalservice.qti \
     libagm_compress_plugin \
     libagm_mixer_plugin \
     libagm_pcm_plugin \
+    libagmipcservice \
+    libaudio_aidl_conversion_common_ndk \
+    libaudiochargerlistener \
     libbatterylistener \
     libfmpal \
     libhfp_pal \
+    libmediautils_vendor.vendor \
+    libmemunreachable.vendor \
+    libpalipcservice \
     libqcompostprocbundle \
     libqcomvisualizer \
     libqcomvoiceprocessing \
+    libsndcardparser \
+    libsoundtriggerhal.qti \
     libvolumelistener \
-    vendor.qti.hardware.AGMIPC@1.0-service \
-    vendor.qti.hardware.pal@1.0-impl
+    qtiaudiohalvendorextn
 
-AUDIO_HAL_DIR := hardware/qcom-caf/sm8450/audio/primary-hal
+PRODUCT_PACKAGES += \
+    libalsautilsv2.vendor \
+    libbundleaidl \
+    libdownmixaidl \
+    libdynamicsprocessingaidl \
+    libloudnessenhanceraidl \
+    libreverbaidl \
+    libvisualizeraidl
+
+PRODUCT_PACKAGES += \
+    android.hardware.audio.common-V1-ndk.vendor \
+    android.hardware.audio.core-V2-ndk.vendor \
+    android.hardware.audio.core.sounddose-V1-ndk.vendor \
+    libaudioaidlcommon.vendor \
+    libaudioutils_shim
+
+# Dirac, wrapped as an AIDL effect
+PRODUCT_PACKAGES += \
+    libdiracaidl
+
+AUDIO_HAL_DIR := hardware/qcom-caf/sm8450-6.6/audio/primary-hal
 
 PRODUCT_COPY_FILES += \
-    $(AUDIO_HAL_DIR)/configs/common/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
-    $(AUDIO_HAL_DIR)/configs/taro/card-defs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/card-defs.xml \
-    $(AUDIO_HAL_DIR)/configs/taro/microphone_characteristics.xml:$(TARGET_COPY_OUT_VENDOR)/etc/microphone_characteristics.xml \
-    $(LOCAL_PATH)/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_cape/audio_effects.xml \
-    $(LOCAL_PATH)/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_cape/audio_policy_configuration.xml \
-    $(LOCAL_PATH)/audio/bluetooth_hearing_aid_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/bluetooth_hearing_aid_audio_policy_configuration.xml \
+    $(LOCAL_PATH)/configs/audio/audio_effects_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects_config.xml \
+    $(LOCAL_PATH)/configs/audio/audio_module_config_primary.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/audio_module_config_primary.xml \
+    $(LOCAL_PATH)/configs/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
+    $(LOCAL_PATH)/configs/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_cape/audio_policy_configuration.xml \
+    $(LOCAL_PATH)/configs/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_cape_qssi/audio_policy_configuration.xml \
+    $(LOCAL_PATH)/configs/audio/audio_policy_engine_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_engine_configuration.xml \
+    $(LOCAL_PATH)/configs/audio/audio_policy_engine_default_stream_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_engine_default_stream_volumes.xml \
+    $(LOCAL_PATH)/configs/audio/audio_policy_engine_product_strategies.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_engine_product_strategies.xml \
+    $(LOCAL_PATH)/configs/audio/audio_policy_engine_stream_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_engine_stream_volumes.xml \
+    $(LOCAL_PATH)/configs/audio/bluetooth_hearing_aid_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/bluetooth_hearing_aid_audio_policy_configuration.xml \
+    $(LOCAL_PATH)/configs/audio/card-defs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/card-defs.xml \
+    $(LOCAL_PATH)/configs/audio/microphone_characteristics.xml:$(TARGET_COPY_OUT_VENDOR)/etc/microphone_characteristics.xml \
+    $(LOCAL_PATH)/configs/audio/mixer_paths_waipio_qrd.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_cape/mixer_paths_waipio_qrd.xml \
+    $(LOCAL_PATH)/configs/audio/vendor_audio_interfaces.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/vendor_audio_interfaces.xml \
     $(LOCAL_PATH)/audio/usecaseKvManager.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usecaseKvManager.xml
 
 PRODUCT_COPY_FILES += \
-    frameworks/av/services/audiopolicy/config/a2dp_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/a2dp_audio_policy_configuration.xml \
+    $(AUDIO_HAL_DIR)/configs/common/bluetooth_qti_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/bluetooth_qti_audio_policy_configuration.xml \
     frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml \
     frameworks/av/services/audiopolicy/config/default_volume_tables.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default_volume_tables.xml \
     frameworks/av/services/audiopolicy/config/r_submix_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/r_submix_audio_policy_configuration.xml \
+    frameworks/av/services/audiopolicy/config/stub_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/stub_audio_policy_configuration.xml \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.low_latency.xml \
     frameworks/native/data/etc/android.hardware.audio.pro.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.pro.xml \
     frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml
@@ -79,6 +111,13 @@ PRODUCT_COPY_FILES += \
 $(call soong_config_set_bool,android_hardware_audio,skip_speaker_layout_channel_mask_field,true)
 
 # Bluetooth
+PRODUCT_PACKAGES += \
+    android.hardware.bluetooth.audio-impl \
+    lib_bt_aptx \
+    lib_bt_ble \
+    lib_bt_bundle \
+    libbluetooth_audio_session_aidl_shim
+
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml
@@ -101,6 +140,10 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.camera.full.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.full.xml \
     frameworks/native/data/etc/android.hardware.camera.raw.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.raw.xml
 
+PRODUCT_PACKAGES += \
+    libcamhidl_shim \
+    libntcam_shim
+
 $(call soong_config_set,camera,package_name,com.nothing.camera)
 $(call soong_config_set,libcameraservice,ext_lib,//$(LOCAL_PATH):libcameraservice_extension.Pong)
 
@@ -108,11 +151,6 @@ $(call soong_config_set,libcameraservice,ext_lib,//$(LOCAL_PATH):libcameraservic
 PRODUCT_PACKAGES += \
     nt-charging-control \
     nt-charging-control_recovery
-
-# Configstore
-PRODUCT_PACKAGES += \
-    vendor.qti.hardware.capabilityconfigstore@1.0 \
-    vendor.qti.hardware.capabilityconfigstore@1.0.vendor
 
 # Dalvik
 PRODUCT_PRODUCT_PROPERTIES += \
@@ -151,15 +189,20 @@ $(call soong_config_set_bool,camera,override_format_from_reserved,true)
 
 # Display
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/displayconfig/display_id_4630946639017191809.xml:$(TARGET_COPY_OUT_VENDOR)/etc/displayconfig/display_id_4630946639017191809.xml
+    $(LOCAL_PATH)/configs/displayconfig/display_id_4630946639017191809.xml:$(TARGET_COPY_OUT_VENDOR)/etc/displayconfig/display_id_4630946639017191809.xml \
+    $(LOCAL_PATH)/configs/displayconfig/display_id_4630946639017191809.xml:$(TARGET_COPY_OUT_VENDOR)/etc/displayconfig/display_id_4630946639017191826.xml
 
 PRODUCT_PACKAGES += \
     android.hardware.graphics.mapper@4.0-impl-qti-display \
     init.qti.display_boot.rc \
     init.qti.display_boot.sh \
+    libfilefinder \
+    mapper.qti \
     vendor.qti.hardware.display.allocator-service \
     vendor.qti.hardware.display.composer-service \
-    vendor.qti.hardware.display.demura-service
+    vendor.qti.hardware.display.demura-service \
+    vendor.qti.hardware.display.snapalloc-impl \
+    vendor.qti.hardware.memtrack-service
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml
@@ -192,6 +235,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml
 
+# Data
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/data/dsi_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/data/dsi_config.xml
+
 # Graphics
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml \
@@ -199,8 +246,8 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.vulkan.version-1_1.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.version-1_1.xml \
     frameworks/native/data/etc/android.hardware.vulkan.version-1_3.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.version-1_3.xml \
     frameworks/native/data/etc/android.hardware.vulkan.compute-0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.compute-0.xml \
-    frameworks/native/data/etc/android.software.opengles.deqp.level-2022-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.opengles.deqp.level.xml \
-    frameworks/native/data/etc/android.software.vulkan.deqp.level-2022-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level.xml
+    frameworks/native/data/etc/android.software.opengles.deqp.level-2024-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.opengles.deqp.level.xml \
+    frameworks/native/data/etc/android.software.vulkan.deqp.level-2024-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level.xml
 
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     ro.surface_flinger.clear_slots_with_set_layer_buffer=true
@@ -210,9 +257,7 @@ $(call soong_config_set,surfaceflinger,udfps_lib,//$(LOCAL_PATH):libudfps_extens
 # Health
 PRODUCT_PACKAGES += \
     android.hardware.health-service.qti \
-    android.hardware.health-service.qti_recovery \
-    android.hardware.health@1.0.vendor \
-    android.hardware.health@2.1.vendor
+    android.hardware.health-service.qti_recovery
 
 # Hotword enrollment
 PRODUCT_COPY_FILES += \
@@ -248,6 +293,10 @@ PRODUCT_PACKAGES += \
 
 # Kernel
 PRODUCT_ENABLE_UFFD_GC := true
+
+# Linker
+PRODUCT_VENDOR_LINKER_CONFIG_FRAGMENTS += \
+    $(LOCAL_PATH)/configs/linker.config.json
 
 # Keymint
 PRODUCT_PACKAGES += \
@@ -285,7 +334,8 @@ PRODUCT_COPY_FILES += \
     $(AUDIO_HAL_DIR)/configs/common/codec2/service/1.0/c2audio.vendor.ext-arm64.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/c2audio.vendor.ext-arm64.policy
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/audio/media_codecs_cape_vendor.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_cape_vendor.xml 
+    $(LOCAL_PATH)/audio/media_codecs_cape_vendor.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_cape_vendor.xml \
+    $(LOCAL_PATH)/configs/media/video_system_specs.json:$(TARGET_COPY_OUT_VENDOR)/etc/media_cape/video_system_specs.json
 
 TARGET_SUPPORTS_OMX_SERVICE := false
 
@@ -388,9 +438,9 @@ $(call soong_config_set,lineage_powershare,powershare_path,/sys/class/qcom-batte
 PRODUCT_PACKAGES += \
     libvndfwk_detect_jni.qti_vendor # Needed by CNE app
 
-# Sensors
+# Sensors (AIDL multihal: Ingot stack plus the stock HAL for tilt to wake)
 PRODUCT_PACKAGES += \
-    android.hardware.sensors@2.1-service.nt-multihal \
+    android.hardware.sensors-service.phone2-multihal \
     sensors.nothing
 
 PRODUCT_COPY_FILES += \
@@ -409,8 +459,8 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.sensor.stepdetector.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.stepdetector.xml
 
 # Shipping API
-BOARD_SHIPPING_API_LEVEL := 32
-PRODUCT_SHIPPING_API_LEVEL := $(BOARD_SHIPPING_API_LEVEL)
+BOARD_SHIPPING_API_LEVEL := 202404
+PRODUCT_SHIPPING_API_LEVEL := 32
 
 # Sku properties
 PRODUCT_COPY_FILES += \
@@ -450,6 +500,9 @@ PRODUCT_PACKAGES += \
     qti_telephony_utils.xml \
     qti_telephony_utils_prd.xml \
     telephony-ext
+
+PRODUCT_PACKAGES += \
+    qcrilNrDb_vendor
 
 PRODUCT_BOOT_JARS += \
     telephony-ext
@@ -503,9 +556,9 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PRODUCT_PROPERTIES += \
     persist.sys.fuse.passthrough.enable=true
 
-# Vibrator
-PRODUCT_PACKAGES += \
-    android.hardware.vibrator.service.pong.richtap
+# Vibrator (stock QTI service with the Richtap effect library, from the blobs)
+PRODUCT_COPY_FILES += \
+    vendor/qcom/opensource/vibrator/excluded-input-devices.xml:$(TARGET_COPY_OUT_VENDOR)/etc/excluded-input-devices.xml
 
 # WiFi
 PRODUCT_PACKAGES += \
@@ -525,7 +578,8 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.ipsec_tunnels.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnels.xml
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/wifi/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/qca6490/WCNSS_qcom_cfg.ini
+    $(LOCAL_PATH)/configs/wifi/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/qca6490/WCNSS_qcom_cfg.ini \
+    $(LOCAL_PATH)/configs/wifi/regdb.bin:$(TARGET_COPY_OUT_VENDOR)/firmware/qca6490/regdb.bin
 
 # WiFi firmware symlinks
 PRODUCT_PACKAGES += \

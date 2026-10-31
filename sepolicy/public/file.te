@@ -10,3 +10,6 @@ type proc_simulated_temp, fs_type, proc_type;
 
 # Charging control
 type nt_chg_recovery, domain, mlstrustedobject, coredomain;
+
+# 6.12 kernel (from the AOSPA phone2 tree)
+type vendor_richtap_resources, file_type;

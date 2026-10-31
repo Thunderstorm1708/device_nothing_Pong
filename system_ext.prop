@@ -85,3 +85,7 @@ persist.timed.enable=true
 
 # Vendor
 ro.vendor.qti.va_aosp.support=1
+
+# 6.12 kernel and sm8450-6.6 stack
+ro.activity_trigger.enable=false
+ro.product.brand_device_name=Nothing Phone (2)

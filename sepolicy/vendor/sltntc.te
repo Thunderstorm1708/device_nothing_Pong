@@ -1,1 +1,4 @@
 rw_dir_file(sltntc, vendor_sysfs_usb_supply)
+
+# 6.12 kernel (from the AOSPA phone2 tree)
+r_dir_file(sltntc, vendor_sysfs_usb_supply)

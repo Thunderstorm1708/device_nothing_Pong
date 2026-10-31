@@ -89,17 +89,31 @@ on fs
 on late-fs
     mount_all /vendor/etc/fstab.qcom --late
 
+on post-fs
+    # set RLIMIT_MEMLOCK to 64MB
+    setrlimit 8 67108864 67108864
+
 on post-fs-data
     mkdir /vendor/data/tombstones 0771 system system
     # Enable WLAN cold boot calibration
     write /sys/kernel/cnss/fs_ready 1
 
 on early-boot
+    # The 6.12 kernel leaves the CDSP down until userspace asks for it
+    exec_background u:r:vendor_qti_init_shell_bg:s0 -- /vendor/bin/init.qti.write.sh /sys/kernel/boot_cdsp/boot 1
     start vendor.sensors
     verity_update_state
 
 on boot
     write /dev/cpuset/audio-app/cpus 1-2
+    # Add a cpuset for the camera daemon
+    # We want all cores for camera
+    mkdir /dev/cpuset/camera-daemon
+    write /dev/cpuset/camera-daemon/cpus 0-7
+    write /dev/cpuset/camera-daemon/mems 0
+    chown cameraserver cameraserver /dev/cpuset/camera-daemon
+    chown cameraserver cameraserver /dev/cpuset/camera-daemon/tasks
+    chmod 0660 /dev/cpuset/camera-daemon/tasks
     chown system /sys/devices/platform/soc/990000.i2c/i2c-0/0-0038/trusted_touch_enable
     chmod 0660 /sys/devices/platform/soc/990000.i2c/i2c-0/0-0038/trusted_touch_enable
     chown system /sys/devices/platform/soc/990000.spi/spi_master/spi0/spi0.0/trusted_touch_enable

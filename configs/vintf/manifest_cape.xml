@@ -1,0 +1,11 @@
+<manifest version="1.0" type="device" target-level="202404">
+    <hal format="aidl">
+        <name>android.hardware.gatekeeper</name>
+        <fqname>IGatekeeper/default</fqname>
+    </hal>
+    <hal format="aidl">
+        <name>vendor.qti.hardware.camera.postproc</name>
+        <version>2</version>
+        <fqname>IPostProcService/camerapostprocservice</fqname>
+    </hal>
+</manifest>

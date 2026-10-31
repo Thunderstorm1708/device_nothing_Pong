@@ -9,3 +9,9 @@
 
 # NFC
 /dev/pn553    0660    nfc               nfc
+
+# Charger
+/sys/class/qcom-battery                                 scenario_fcc                     0660    system  system
+
+# eSE
+/dev/st54spi_gpio             0660   system       system

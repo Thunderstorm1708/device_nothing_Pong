@@ -265,3 +265,20 @@ wifi.aware.interface=wifi-aware0
 
 # Zygote
 zygote.critical_window.minute=10
+
+# 6.12 kernel and sm8450-6.6 stack
+persist.vendor.audio_hal.dsp_bit_width_enforce_mode=24
+ro.vendor.audio.downmix.attenuation=1
+persist.vendor.newdirac.cur.config=MUSIC
+persist.vendor.newdirac.dump=0
+persist.vendor.newdirac.enable.value=1.000000
+persist.vendor.newdirac.volume.value=0.000000
+vendor.display.disable_hdr_lut_gen=1
+vendor.display.disable_ui_3d_tonemap=1
+persist.vendor.dpm.vndr.tcm=2
+persist.vendor.fingerprint.sensor_location=540|2186|93
+persist.vendor.fingerprint.type=udfps
+vendor.gatekeeper.is_security_level_spu=0
+media.c2.hal.selection=aidl
+vendor.media.omx=0
+ro.netflix.bsp_rev=Q8450-34634-1

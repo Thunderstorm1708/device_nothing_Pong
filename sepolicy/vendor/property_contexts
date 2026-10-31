@@ -1,2 +1,18 @@
 # FastRPC
 persist.vendor.fastrpc.hwid_version      u:object_r:vendor_adsprpc_prop:s0
+
+# 6.12 kernel (from the AOSPA phone2 tree)
+persist.vendor.dirac.           u:object_r:vendor_audio_prop:s0
+persist.vendor.newAAC.          u:object_r:vendor_audio_prop:s0
+persist.vendor.newdirac.        u:object_r:vendor_audio_prop:s0
+ro.vendor.dirac.                u:object_r:vendor_audio_prop:s0
+vendor.dirac.                   u:object_r:vendor_audio_prop:s0
+persist.vendor.fingerprint.detect_interaction   u:object_r:vendor_fingerprint_prop:s0 exact bool
+persist.vendor.fingerprint.navigation_gesture   u:object_r:vendor_fingerprint_prop:s0 exact bool
+persist.vendor.fingerprint.sensor_id            u:object_r:vendor_fingerprint_prop:s0 exact int
+persist.vendor.fingerprint.sensor_location      u:object_r:vendor_fingerprint_prop:s0 exact string
+persist.vendor.fingerprint.sensor_strength      u:object_r:vendor_fingerprint_prop:s0 exact int
+persist.vendor.fingerprint.type                 u:object_r:vendor_fingerprint_prop:s0 exact string
+persist.vendor.overlay.fp_model    u:object_r:vendor_fingerprint_prop:s0 exact string
+persist.vendor.overlay.fp_serial   u:object_r:vendor_fingerprint_prop:s0 exact string
+persist.vendor.overlay.fp_vendor   u:object_r:vendor_fingerprint_prop:s0 exact string

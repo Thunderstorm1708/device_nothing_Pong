@@ -1,2 +1,5 @@
 # Fingerprint
 vendor_internal_prop(system_fingerprint_prop)
+
+# 6.12 kernel (from the AOSPA phone2 tree)
+vendor_internal_prop(vendor_fingerprint_prop)

@@ -4,28 +4,43 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include <chrono>
+#include <string>
 #include <thread>
 
 #include <android-base/file.h>
-#include <android-base/stringprintf.h>
 
-#include "Session.h"
 #include "Legacy2Aidl.h"
+#include "Session.h"
 
 #include "CancellationSignal.h"
 
-#define FOD_HBM_PATH "/sys/devices/platform/soc/soc:qcom,dsi-display-primary/force_fod_ui"
-#define FOD_UI_READY_PATH "/sys/devices/platform/soc/soc:qcom,dsi-display-primary/fod_ui"
+namespace aidl::android::hardware::biometrics::fingerprint {
 
-namespace aidl {
-namespace android {
-namespace hardware {
-namespace biometrics {
-namespace fingerprint {
+namespace {
 
-void setFodHbm(bool status) {
-    ::android::base::WriteStringToFile(status ? "1" : "0", FOD_HBM_PATH);
+constexpr char kForceFodUiPath[] =
+        "/sys/devices/platform/soc/soc:qcom,dsi-display-primary/force_fod_ui";
+constexpr char kFodUiPath[] = "/sys/devices/platform/soc/soc:qcom,dsi-display-primary/fod_ui";
+constexpr auto kFodUiTimeout = std::chrono::milliseconds(100);
+
+void waitForFodUi() {
+    auto deadline = std::chrono::steady_clock::now() + kFodUiTimeout;
+    std::string value;
+    while (std::chrono::steady_clock::now() < deadline) {
+        if (::android::base::ReadFileToString(kFodUiPath, &value) && value[0] == '1') return;
+        std::this_thread::sleep_for(std::chrono::milliseconds(4));
+    }
+    ALOGW("FOD illumination not ready after %lld ms", (long long)kFodUiTimeout.count());
 }
+
+void setFingerDown(fingerprint_device_t* device, bool down) {
+    ::android::base::WriteStringToFile(down ? "1" : "0", kForceFodUiPath);
+    if (down) waitForFodUi();
+    device->goodixExtCmd(device, down ? 1 : 0, 0);
+}
+
+}  // namespace
 
 void onClientDeath(void* cookie) {
     ALOGI("FingerprintService has died");
@@ -35,15 +50,12 @@ void onClientDeath(void* cookie) {
     }
 }
 
-Session::Session(fingerprint_device_t* device, int32_t userId,
-            std::shared_ptr<ISessionCallback> cb, LockoutTracker lockoutTracker)
-            : mDevice(device), mLockoutTracker(lockoutTracker), mUserId(userId), mCb(cb),
-              mUdfpsHandler(FOD_UI_READY_PATH, [device](bool down) {
-                  device->goodixExtCmd(device, down ? 1 : 0, 0);
-              }) {
+Session::Session(fingerprint_device_t* device, int userId, std::shared_ptr<ISessionCallback> cb,
+                 LockoutTracker lockoutTracker)
+    : mDevice(device), mLockoutTracker(lockoutTracker), mUserId(userId), mCb(cb) {
     mDeathRecipient = AIBinder_DeathRecipient_new(onClientDeath);
 
-    std::string path = ::android::base::StringPrintf("/data/vendor_de/%d/fpdata/", mUserId);
+    auto path = std::format("/data/vendor_de/{}/fpdata/", userId);
     mDevice->set_active_group(mDevice, mUserId, path.c_str());
 }
 
@@ -57,8 +69,7 @@ ndk::ScopedAStatus Session::generateChallenge() {
 
 ndk::ScopedAStatus Session::revokeChallenge(int64_t challenge) {
     ALOGI("revokeChallenge: %ld", challenge);
-    mUdfpsHandler.onFingerUp();
-    setFodHbm(false);
+    setFingerDown(mDevice, false);
     mDevice->post_enroll(mDevice);
     mCb->onChallengeRevoked(challenge);
 
@@ -67,17 +78,12 @@ ndk::ScopedAStatus Session::revokeChallenge(int64_t challenge) {
 
 ndk::ScopedAStatus Session::enroll(const HardwareAuthToken& hat,
                                    std::shared_ptr<ICancellationSignal>* out) {
-    ALOGI("enroll");
-
     hw_auth_token_t authToken;
     translate(hat, authToken);
-
     int error = mDevice->enroll(mDevice, &authToken, mUserId, 60);
     if (error) {
         ALOGE("enroll failed: %d", error);
         mCb->onError(Error::UNABLE_TO_PROCESS, error);
-    } else {
-	setFodHbm(true);
     }
 
     *out = SharedRefBase::make<CancellationSignal>(this);
@@ -86,14 +92,11 @@ ndk::ScopedAStatus Session::enroll(const HardwareAuthToken& hat,
 
 ndk::ScopedAStatus Session::authenticate(int64_t operationId,
                                          std::shared_ptr<ICancellationSignal>* out) {
-    ALOGI("authenticate");
-
+    checkSensorLockout();
     int error = mDevice->authenticate(mDevice, operationId, mUserId);
     if (error) {
         ALOGE("authenticate failed: %d", error);
         mCb->onError(Error::UNABLE_TO_PROCESS, error);
-    } else {
-	setFodHbm(true);
     }
 
     *out = SharedRefBase::make<CancellationSignal>(this);
@@ -101,7 +104,6 @@ ndk::ScopedAStatus Session::authenticate(int64_t operationId,
 }
 
 ndk::ScopedAStatus Session::detectInteraction(std::shared_ptr<ICancellationSignal>* out) {
-    ALOGI("detectInteraction");
     ALOGD("Detect interaction is not supported");
     mCb->onError(Error::UNABLE_TO_PROCESS, 0 /* vendorCode */);
 
@@ -110,8 +112,6 @@ ndk::ScopedAStatus Session::detectInteraction(std::shared_ptr<ICancellationSigna
 }
 
 ndk::ScopedAStatus Session::enumerateEnrollments() {
-    ALOGI("enumerateEnrollments");
-
     int error = mDevice->enumerate(mDevice);
     if (error) {
         ALOGE("enumerate failed: %d", error);
@@ -136,7 +136,6 @@ ndk::ScopedAStatus Session::getAuthenticatorId() {
     uint64_t auth_id = mDevice->get_authenticator_id(mDevice);
     ALOGI("getAuthenticatorId: %ld", auth_id);
     mCb->onAuthenticatorIdRetrieved(auth_id);
-    
     return ndk::ScopedAStatus::ok();
 }
 
@@ -144,39 +143,29 @@ ndk::ScopedAStatus Session::invalidateAuthenticatorId() {
     uint64_t auth_id = mDevice->get_authenticator_id(mDevice);
     ALOGI("invalidateAuthenticatorId: %ld", auth_id);
     mCb->onAuthenticatorIdInvalidated(auth_id);
-
     return ndk::ScopedAStatus::ok();
 }
 
 ndk::ScopedAStatus Session::resetLockout(const HardwareAuthToken& /*hat*/) {
-    ALOGI("resetLockout");
-
     clearLockout(true);
-    mIsLockoutTimerAborted = true;
+    if (mIsLockoutTimerStarted) mIsLockoutTimerAborted = true;
 
     return ndk::ScopedAStatus::ok();
 }
 
-ndk::ScopedAStatus Session::onPointerDown(int32_t /*pointerId*/, int32_t x, int32_t y, float minor,
-                                          float major) {
-    ALOGI("onPointerDown: x=%d, y=%d, minor=%f, major=%f", x, y, minor, major);
-    mIsAod = false;
-
+ndk::ScopedAStatus Session::onPointerDown(int32_t /*pointerId*/, int32_t /*x*/, int32_t /*y*/,
+                                          float /*minor*/, float /*major*/) {
+    setFingerDown(mDevice, true);
     return ndk::ScopedAStatus::ok();
 }
 
 ndk::ScopedAStatus Session::onPointerUp(int32_t /*pointerId*/) {
-    ALOGI("onPointerUp");
-
-    mUdfpsHandler.onFingerUp();
-
+    setFingerDown(mDevice, false);
     return ndk::ScopedAStatus::ok();
 }
 
 ndk::ScopedAStatus Session::onUiReady() {
-    ALOGI("onUiReady");
-
-    mUdfpsHandler.onUiReady(mIsAod);
+    // TODO: stub
 
     return ndk::ScopedAStatus::ok();
 }
@@ -200,9 +189,7 @@ ndk::ScopedAStatus Session::detectInteractionWithContext(
 }
 
 ndk::ScopedAStatus Session::onPointerDownWithContext(const PointerContext& context) {
-    auto status = onPointerDown(context.pointerId, context.x, context.y, context.minor, context.major);
-    mIsAod = context.isAod;
-    return status;
+    return onPointerDown(context.pointerId, context.x, context.y, context.minor, context.major);
 }
 
 ndk::ScopedAStatus Session::onPointerUpWithContext(const PointerContext& context) {
@@ -213,8 +200,8 @@ ndk::ScopedAStatus Session::onContextChanged(const common::OperationContext& /*c
     return ndk::ScopedAStatus::ok();
 }
 
-ndk::ScopedAStatus Session::onPointerCancelWithContext(const PointerContext& context) {
-    return onPointerUp(context.pointerId);
+ndk::ScopedAStatus Session::onPointerCancelWithContext(const PointerContext& /*context*/) {
+    return ndk::ScopedAStatus::ok();
 }
 
 ndk::ScopedAStatus Session::setIgnoreDisplayTouches(bool /*shouldIgnore*/) {
@@ -222,26 +209,18 @@ ndk::ScopedAStatus Session::setIgnoreDisplayTouches(bool /*shouldIgnore*/) {
 }
 
 ndk::ScopedAStatus Session::cancel() {
-    ALOGI("cancel");
-
-    mUdfpsHandler.onFingerUp();
-    setFodHbm(false);
-
+    setFingerDown(mDevice, false);
     int ret = mDevice->cancel(mDevice);
 
     if (ret == 0) {
         mCb->onError(Error::CANCELED, 0 /* vendorCode */);
-
         return ndk::ScopedAStatus::ok();
-    } else {
-        return ndk::ScopedAStatus::fromServiceSpecificError(ret);
     }
+
+    return ndk::ScopedAStatus::fromServiceSpecificError(ret);
 }
 
 ndk::ScopedAStatus Session::close() {
-    ALOGI("close");
-    mUdfpsHandler.onFingerUp();
-    setFodHbm(false);
     mClosed = true;
     mCb->onSessionClosed();
     AIBinder_DeathRecipient_delete(mDeathRecipient);
@@ -260,6 +239,7 @@ bool Session::isClosed() {
 // AIDL-compliant Error
 Error Session::VendorErrorFilter(int32_t error, int32_t* vendorCode) {
     *vendorCode = 0;
+
     switch (error) {
         case FINGERPRINT_ERROR_HW_UNAVAILABLE:
             return Error::HW_UNAVAILABLE;
@@ -292,6 +272,7 @@ Error Session::VendorErrorFilter(int32_t error, int32_t* vendorCode) {
 // to AIDL-compliant AcquiredInfo
 AcquiredInfo Session::VendorAcquiredFilter(int32_t info, int32_t* vendorCode) {
     *vendorCode = 0;
+
     switch (info) {
         case FINGERPRINT_ACQUIRED_GOOD:
             return AcquiredInfo::GOOD;
@@ -312,31 +293,25 @@ AcquiredInfo Session::VendorAcquiredFilter(int32_t info, int32_t* vendorCode) {
                 return AcquiredInfo::VENDOR;
             }
     }
-    ALOGE("Unknown acquiredmsg from fingerprint vendor library: %d", info);
-    return AcquiredInfo::INSUFFICIENT;
+    ALOGE("Unknown acquired message from fingerprint vendor library: %d", info);
+    return AcquiredInfo::UNKNOWN;
 }
 
 bool Session::checkSensorLockout() {
-    LockoutMode lockoutMode = mLockoutTracker.getMode();
-
-    if (lockoutMode != LockoutMode::NONE) {
-	mUdfpsHandler.onFingerUp();
-	setFodHbm(false);
-    }
-
-    if (lockoutMode == LockoutMode::PERMANENT) {
+    LockoutTracker::LockoutMode lockoutMode = mLockoutTracker.getMode();
+    if (lockoutMode == LockoutTracker::LockoutMode::kPermanent) {
         ALOGE("Fail: lockout permanent");
         mCb->onLockoutPermanent();
         mIsLockoutTimerAborted = true;
         return true;
-    } else if (lockoutMode == LockoutMode::TIMED) {
+    }
+    if (lockoutMode == LockoutTracker::LockoutMode::kTimed) {
         int64_t timeLeft = mLockoutTracker.getLockoutTimeLeft();
         ALOGE("Fail: lockout timed: %ld", timeLeft);
         mCb->onLockoutTimed(timeLeft);
         if (!mIsLockoutTimerStarted) startLockoutTimer(timeLeft);
         return true;
     }
-
     return false;
 }
 
@@ -346,9 +321,7 @@ void Session::clearLockout(bool clearAttemptCounter) {
 }
 
 void Session::startLockoutTimer(int64_t timeout) {
-    mIsLockoutTimerAborted = false;
-    std::function<void()> action =
-            std::bind(&Session::lockoutTimerExpired, this);
+    std::function<void()> action = std::bind(&Session::lockoutTimerExpired, this);
     std::thread([timeout, action]() {
         std::this_thread::sleep_for(std::chrono::milliseconds(timeout));
         action();
@@ -358,31 +331,31 @@ void Session::startLockoutTimer(int64_t timeout) {
 }
 
 void Session::lockoutTimerExpired() {
-    if (!mIsLockoutTimerAborted)
-        clearLockout(false);
+    if (!mIsLockoutTimerAborted) clearLockout(false);
 
     mIsLockoutTimerStarted = false;
     mIsLockoutTimerAborted = false;
 }
 
 void Session::notify(const fingerprint_msg_t* msg) {
+    // const uint64_t devId = reinterpret_cast<uint64_t>(mDevice);
     switch (msg->type) {
         case FINGERPRINT_ERROR: {
             int32_t vendorCode = 0;
             Error result = VendorErrorFilter(msg->data.error, &vendorCode);
             ALOGD("onError(%hhd, %d)", result, vendorCode);
             mCb->onError(result, vendorCode);
+            setFingerDown(mDevice, false);
         } break;
         case FINGERPRINT_ACQUIRED: {
             int32_t vendorCode = 0;
             AcquiredInfo result =
                     VendorAcquiredFilter(msg->data.acquired.acquired_info, &vendorCode);
+            ALOGD("onAcquired(%hhd, %d)", result, vendorCode);
+            // Goodix reports finger down/up as vendor codes, which would make
+            // SystemUI drop the UDFPS illumination mid-capture.
             if (result != AcquiredInfo::VENDOR) {
-                ALOGD("onAcquired(%d, %d)", result, vendorCode);
                 mCb->onAcquired(result, vendorCode);
-            } else {
-                ALOGW("onAcquired(AcquiredInfo::VENDOR, %d)", vendorCode);
-                // Do not send onAcquired or illumination will be turned off prematurely
             }
         } break;
         case FINGERPRINT_TEMPLATE_ENROLLING: {
@@ -391,8 +364,7 @@ void Session::notify(const fingerprint_msg_t* msg) {
             mCb->onEnrollmentProgress(msg->data.enroll.finger.fid,
                                       msg->data.enroll.samples_remaining);
             if (msg->data.enroll.samples_remaining == 0) {
-                mUdfpsHandler.onFingerUp();
-                setFodHbm(false);
+                setFingerDown(mDevice, false);
             }
         } break;
         case FINGERPRINT_TEMPLATE_REMOVED: {
@@ -404,7 +376,7 @@ void Session::notify(const fingerprint_msg_t* msg) {
         } break;
         case FINGERPRINT_AUTHENTICATED: {
             ALOGD("onAuthenticated(fid=%d, gid=%d)", msg->data.authenticated.finger.fid,
-                msg->data.authenticated.finger.gid);
+                  msg->data.authenticated.finger.gid);
             if (msg->data.authenticated.finger.fid != 0) {
                 const hw_auth_token_t hat = msg->data.authenticated.hat;
                 HardwareAuthToken authToken;
@@ -412,13 +384,12 @@ void Session::notify(const fingerprint_msg_t* msg) {
 
                 mCb->onAuthenticationSucceeded(msg->data.authenticated.finger.fid, authToken);
                 mLockoutTracker.reset(true);
-                mUdfpsHandler.onFingerUp();
-                setFodHbm(false);
             } else {
                 mCb->onAuthenticationFailed();
                 mLockoutTracker.addFailedAttempt();
                 checkSensorLockout();
             }
+            setFingerDown(mDevice, false);
         } break;
         case FINGERPRINT_TEMPLATE_ENUMERATING: {
             ALOGD("onEnumerate(fid=%d, gid=%d, rem=%d)", msg->data.enumerated.finger.fid,
@@ -433,8 +404,4 @@ void Session::notify(const fingerprint_msg_t* msg) {
     }
 }
 
-} // namespace fingerprint
-} // namespace biometrics
-} // namespace hardware
-} // namespace android
-} // namespace aidl
+}  // namespace aidl::android::hardware::biometrics::fingerprint

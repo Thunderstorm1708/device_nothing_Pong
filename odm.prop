@@ -6,3 +6,9 @@ ro.vendor.qti.va_odm.support=1
 # Sku properties
 ro.product.property_source_order=odm,vendor,product,system_ext,system
 import /odm/etc/build_${ro.boot.hardware.sku}.prop
+
+# 6.12 kernel and sm8450-6.6 stack
+persist.vendor.audio.spv4.enable=false
+persist.vendor.audio.vbat.enabled=false
+ro.audio.monitorRotation=true
+persist.vendor.bluetooth.modem_nv_support=true
