@@ -285,6 +285,7 @@ gpi.ko
 gpucc-diwali.ko
 gunyah_trace.ko
 i2c-qcom-geni.ko
+icnss2.ko
 kryo_arm64_edac.ko
 ledtrig-pattern.ko
 llcc_heuristics.ko
