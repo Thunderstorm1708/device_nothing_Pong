@@ -5,7 +5,6 @@
 #
 
 DEVICE_PATH := device/nothing/Pong
-KERNEL_PREBUILT_DIR := device/nothing/Pong-kernel
 
 # A/B
 AB_OTA_PARTITIONS += \
@@ -52,8 +51,11 @@ BOARD_RAMDISK_USE_LZ4 := true
 # DTB / DTBO
 BOARD_KERNEL_SEPARATED_DTBO := true
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
-BOARD_PREBUILT_DTBIMAGE_DIR := $(KERNEL_PREBUILT_DIR)/dtbs
-BOARD_PREBUILT_DTBOIMAGE := $(KERNEL_PREBUILT_DIR)/dtbo.img
+BOARD_DTBO_CFG := $(DEVICE_PATH)/configs/kernel/dtbo.cfg
+TARGET_DTB_LIST_WILDCARD := \
+    vendor/qcom/cape-v2 \
+    vendor/qcom/cape \
+    vendor/qcom/capep
 
 # Display
 SOONG_CONFIG_qtidisplay_udfps := true
@@ -85,31 +87,44 @@ BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_IMAGE_NAME := Image
 
-# Prebuilt 6.12 GKI kernel (device/nothing/Pong-kernel).
-#
-# That repo is not a source tree: its Makefile only answers headers_install,
-# so the qcom-caf HALs compile against the uapi headers of this exact build.
+# 6.12 GKI kernel, built inline from source:
+#   kernel/nothing/sm8475             ACK android16-6.12 (redducc's common-6.12)
+#   kernel/nothing/sm8475-modules     soc-repo (Qualcomm SoC drivers) + techpacks
+#   kernel/nothing/sm8475-devicetrees cape dts
 # TARGET_KERNEL_VERSION selects the "UM 5.10 upgraded to UM 6.6" HAL set
-# (hardware/qcom-caf/sm8450-6.6), the newest stack Lineage ships for taro.
-# Prebuilt kernels are refused on official build types, so build UNOFFICIAL.
-TARGET_KERNEL_SOURCE := $(KERNEL_PREBUILT_DIR)
-TARGET_KERNEL_CONFIG := prebuilt
+# (hardware/qcom-caf/sm8450-6.6), the newest stack Lineage ships for taro;
+# the kernel itself is 6.12.
+TARGET_KERNEL_SOURCE := kernel/nothing/sm8475
 TARGET_KERNEL_VERSION := 6.6
-TARGET_FORCE_PREBUILT_KERNEL := true
-TARGET_PREBUILT_KERNEL := $(KERNEL_PREBUILT_DIR)/Image
+TARGET_KERNEL_CONFIG := \
+    gki_defconfig \
+    vendor/waipio_GKI.config \
+    vendor/pong_GKI.config
+TARGET_KERNEL_KCONFIG_EXT_PREFIX := kernel/nothing/sm8475-modules/soc-repo
+TARGET_KERNEL_ADDITIONAL_FLAGS := \
+    KCFLAGS=-D__ANDROID_COMMON_KERNEL__ \
+    KBUILD_GENDWARFKSYMS_STABLE=1 \
+    DEPMOD=true \
+    SOC_TARGET_VARIANT=waipio_perf
+
+# The version above hides that this is 6.11+, whose host tools no longer
+# build against the old glibc sysroot
+TARGET_KERNEL_LIBC_SYSROOT_USE := host
+
+# No system_dlkm: the GKI modules Pong uses ship in vendor_dlkm/vendor_boot
+TARGET_KERNEL_MIXED_MODE := false
+
+TARGET_KERNEL_EXT_MODULE_ROOT := kernel/nothing/sm8475-modules
+TARGET_KERNEL_EXT_MODULES := build
 
 # Kernel modules
-KERNEL_MODULES_DLKM_DIR := $(KERNEL_PREBUILT_DIR)/modules/vendor_dlkm
-KERNEL_MODULES_RAMDISK_DIR := $(KERNEL_PREBUILT_DIR)/modules/vendor_ramdisk
-
-BOARD_VENDOR_KERNEL_MODULES := $(wildcard $(KERNEL_MODULES_DLKM_DIR)/*.ko)
-BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_MODULES_DLKM_DIR)/modules.load))
-BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(KERNEL_MODULES_DLKM_DIR)/modules.blocklist
-
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(wildcard $(KERNEL_MODULES_RAMDISK_DIR)/*.ko)
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_MODULES_RAMDISK_DIR)/modules.load))
-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_MODULES_RAMDISK_DIR)/modules.load.recovery))
+BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(DEVICE_PATH)/configs/kernel/modules.blocklist
+BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/configs/kernel/modules.load))
 BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := $(BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE)
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/configs/kernel/modules.load.vendor_boot))
+BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/configs/kernel/modules.load.recovery))
+BOOT_KERNEL_MODULES := $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)
+RECOVERY_KERNEL_MODULES := $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)
 
 # The GKI protected modules (zsmalloc, zram...) must keep their signatures.
 BOARD_DO_NOT_STRIP_VENDOR_MODULES := true
