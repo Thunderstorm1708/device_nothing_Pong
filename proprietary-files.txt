@@ -1825,15 +1825,8 @@ system_ext/etc/sltntc/sltntc.conf
 system_ext/etc/sltntc/sltntc_SM8475.conf
 
 # Libraries AOSPA builds (hardware/qcom/gps) or ships (vendor/qcom/common) - from Pong B4.1 stock
-vendor/lib64/libgnsspps.so
-vendor/lib64/libgps.utils.so
-vendor/lib64/libloc_base_util.so
-vendor/lib64/libloc_core.so
-vendor/lib64/liblocation_api.so
-vendor/lib64/libloc_socket.so
 vendor/lib64/libmmosal_vendor.so
 vendor/lib64/libsdm-color.so
-vendor/lib64/libsynergy_loc_api.so
 vendor/lib64/libtinyxml2_1.so
 vendor/lib64/qti.video.utils.videobufferlayout.so
 vendor/lib64/vendor.qti.hardware.fm@1.0.so
@@ -1843,3 +1836,12 @@ vendor/lib64/libpowercore.so
 vendor/lib64/libqspm-mem-utils-vendor.so
 vendor/lib64/vendor.qti.hardware.fm-V1-ndk.so
 vendor/lib64/vendor.qti.qspmhal-V1-ndk.so;MODULE_SUFFIX=_vendor
+
+# Location core (newer loc_util API the Nothing Phone (3) GNSS blobs need) - from Sony Xperia 10 VII (ELBE, LineageOS 24.0)
+vendor/lib64/libgnsspps.so
+vendor/lib64/libgps.utils.so
+vendor/lib64/libloc_base_util.so
+vendor/lib64/libloc_core.so
+vendor/lib64/liblocation_api.so
+vendor/lib64/libloc_socket.so
+vendor/lib64/libsynergy_loc_api.so
