@@ -36,64 +36,101 @@ lib_fixups: lib_fixups_user_type = {
     'libloc_api_v02': lib_fixup_prebuilt_suffix,
     (
         'com.qualcomm.qti.dpm.api@1.0',
-        'com.qualcomm.qti.imscmservice@*',
-        'com.qualcomm.qti.uceservice@*',
+        # com.qualcomm.qti.imscmservice@*
+        # com.qualcomm.qti.uceservice@*
         'libmmosal',
         'vendor.qti.ImsRtpService-V1-ndk',
-        'vendor.qti.data.factory@*',
+        # vendor.qti.data.factory@*
         'vendor.qti.data.mwqem@1.0',
         'vendor.qti.data.slm@1.0',
         'vendor.qti.diaghal@1.0',
         'vendor.qti.hardware.ListenSoundModel@1.0',
-        'vendor.qti.hardware.data.cne.internal.*@*',
-        'vendor.qti.hardware.data.connection@*',
+        # vendor.qti.hardware.data.cne.internal.*@*
+        # vendor.qti.hardware.data.connection@*
+        'vendor.qti.hardware.data.connection@1.0',
+        'vendor.qti.hardware.data.connection@1.1',
         'vendor.qti.hardware.data.connectionfactory-V1-ndk_platform',
         'vendor.qti.hardware.data.dataactivity-V1-ndk_platform',
-        'vendor.qti.hardware.data.dynamicdds@*',
+        # vendor.qti.hardware.data.dynamicdds@*
+        'vendor.qti.hardware.data.dynamicdds@1.0',
+        'vendor.qti.hardware.data.dynamicdds@1.1',
         'vendor.qti.hardware.data.flow@1.0',
         'vendor.qti.hardware.data.flow@1.1',
-        'vendor.qti.hardware.data.iwlan@*',
+        # vendor.qti.hardware.data.iwlan@*
         'vendor.qti.hardware.data.ka-V1-ndk_platform',
         'vendor.qti.hardware.data.latency@1.0',
         'vendor.qti.hardware.data.lce@1.0',
         'vendor.qti.hardware.data.qmi@1.0',
         'vendor.qti.hardware.dpmaidlservice-V1-ndk',
-        'vendor.qti.hardware.dpmservice@*',
-        'vendor.qti.hardware.embmssl@*',
+        # vendor.qti.hardware.dpmservice@*
+        # vendor.qti.hardware.embmssl@*
         'vendor.qti.hardware.embmsslaidl-V2-ndk',
-        'vendor.qti.hardware.limits@*',
+        # vendor.qti.hardware.limits@*
         'vendor.qti.hardware.mwqemadapter@1.0',
-        'vendor.qti.hardware.qccsyshal@*',
+        # vendor.qti.hardware.qccsyshal@*
         'vendor.qti.hardware.qccvndhal@1.0',
         'vendor.qti.hardware.radio.am@1.0',
         'vendor.qti.hardware.radio.atcmdfwd@1.0',
         'vendor.qti.hardware.radio.ims-V12-ndk_platform',
-        'vendor.qti.hardware.radio.ims@*',
+        # vendor.qti.hardware.radio.ims@*
+        'vendor.qti.hardware.radio.ims@1.0',
+        'vendor.qti.hardware.radio.ims@1.1',
+        'vendor.qti.hardware.radio.ims@1.2',
+        'vendor.qti.hardware.radio.ims@1.3',
+        'vendor.qti.hardware.radio.ims@1.4',
+        'vendor.qti.hardware.radio.ims@1.5',
+        'vendor.qti.hardware.radio.ims@1.6',
+        'vendor.qti.hardware.radio.ims@1.7',
+        'vendor.qti.hardware.radio.ims@1.8',
         'vendor.qti.hardware.radio.internal.deviceinfo@1.0',
-        'vendor.qti.hardware.radio.lpa@*',
+        # vendor.qti.hardware.radio.lpa@*
+        'vendor.qti.hardware.radio.lpa@1.0',
+        'vendor.qti.hardware.radio.lpa@1.1',
+        'vendor.qti.hardware.radio.lpa@1.2',
         'vendor.qti.hardware.radio.qcrilhook@1.0',
         'vendor.qti.hardware.radio.qtiradio-V8-ndk_platform',
-        'vendor.qti.hardware.radio.qtiradio@*',
+        # vendor.qti.hardware.radio.qtiradio@*
+        'vendor.qti.hardware.radio.qtiradio@1.0',
+        'vendor.qti.hardware.radio.qtiradio@2.0',
+        'vendor.qti.hardware.radio.qtiradio@2.1',
+        'vendor.qti.hardware.radio.qtiradio@2.2',
+        'vendor.qti.hardware.radio.qtiradio@2.3',
+        'vendor.qti.hardware.radio.qtiradio@2.4',
+        'vendor.qti.hardware.radio.qtiradio@2.5',
+        'vendor.qti.hardware.radio.qtiradio@2.6',
         'vendor.qti.hardware.radio.qtiradioconfig-V2-ndk_platform',
-        'vendor.qti.hardware.radio.uim@*',
-        'vendor.qti.hardware.radio.uim_remote_client@*',
+        # vendor.qti.hardware.radio.uim@*
+        'vendor.qti.hardware.radio.uim@1.0',
+        'vendor.qti.hardware.radio.uim@1.1',
+        'vendor.qti.hardware.radio.uim@1.2',
+        # vendor.qti.hardware.radio.uim_remote_client@*
+        'vendor.qti.hardware.radio.uim_remote_client@1.0',
+        'vendor.qti.hardware.radio.uim_remote_client@1.1',
+        'vendor.qti.hardware.radio.uim_remote_client@1.2',
         'vendor.qti.hardware.radio.uim_remote_server@1.0',
         'vendor.qti.hardware.slmadapter@1.0',
         'vendor.qti.hardware.wifidisplaysession@1.0',
         'vendor.qti.ims.callcapability@1.0',
         'vendor.qti.ims.callinfo@1.0',
-        'vendor.qti.ims.configservice@*',
+        # vendor.qti.ims.configservice@*
         'vendor.qti.ims.connection@1.0',
-        'vendor.qti.ims.factory@*',
-        'vendor.qti.ims.rcsconfig@*',
-        'vendor.qti.ims.rcssip@*',
-        'vendor.qti.ims.rcsuce@*',
+        # vendor.qti.ims.factory@*
+        # vendor.qti.ims.rcsconfig@*
+        'vendor.qti.ims.rcsconfig@1.0',
+        'vendor.qti.ims.rcsconfig@1.1',
+        'vendor.qti.ims.rcsconfig@2.0',
+        'vendor.qti.ims.rcsconfig@2.1',
+        # vendor.qti.ims.rcssip@*
+        # vendor.qti.ims.rcsuce@*
         'vendor.qti.diaghal-V1-ndk',
         'vendor.qti.hardware.minkipcbinder-V1-ndk',
         'vendor.qti.qccsyshal_aidl-V1-ndk',
         'vendor.qti.qccvndhal_aidl-V1-ndk',
         'vendor.qti.imsrtpservice@3.0',
-        'vendor.qti.latency@*',
+        # vendor.qti.latency@*
+        'vendor.qti.latency@2.0',
+        'vendor.qti.latency@2.1',
+        'vendor.qti.latency@2.2',
         'vendor.display.color@1.0',
         'vendor.display.color@1.1',
         'vendor.display.color@1.2',
