@@ -33,6 +33,7 @@ def lib_fixup_prebuilt_suffix(lib: str, *args, **kwargs):
 lib_fixups: lib_fixups_user_type = {
     **lib_fixups,
     'libgrpc++_unsecure': lib_fixup_prebuilt_suffix,
+    'libloc_api_v02': lib_fixup_prebuilt_suffix,
     (
         'com.qualcomm.qti.dpm.api@1.0',
         'com.qualcomm.qti.imscmservice@*',
@@ -105,7 +106,30 @@ lib_fixups: lib_fixups_user_type = {
         'vendor.qti.hardware.perf@2.1',
         'vendor.qti.hardware.perf@2.2',
         'vendor.qti.hardware.perf2-V1-ndk',
-        'vendor.qti.hardware.wifidisplaysession_aidl-V1-ndk',
+        'vendor.qti.data.factoryservice-V1-ndk',
+        'vendor.qti.data.mwqemaidlservice-V1-ndk',
+        'vendor.qti.hardware.data.cneaidlservice.internal.api-V1-ndk',
+        'vendor.qti.hardware.data.cneaidlservice.internal.constants-V1-ndk',
+        'vendor.qti.hardware.data.cneaidlservice.internal.server-V1-ndk',
+        'vendor.qti.hardware.data.connectionfactory-V1-ndk',
+        'vendor.qti.hardware.data.dataactivity-V1-ndk',
+        'vendor.qti.hardware.data.dynamicddsaidlservice-V1-ndk',
+        'vendor.qti.hardware.data.flowaidlservice-V1-ndk',
+        'vendor.qti.hardware.data.ka-V1-ndk',
+        'vendor.qti.hardware.data.lceaidlservice-V1-ndk',
+        'vendor.qti.hardware.data.qmiaidlservice-V1-ndk',
+        'vendor.qti.hardware.mwqemadapteraidlservice-V1-ndk',
+        'vendor.qti.ims.callcapabilityaidlservice-V1-ndk',
+        'vendor.qti.ims.configaidlservice-V1-ndk',
+        'vendor.qti.ims.connectionaidlservice-V1-ndk',
+        'vendor.qti.ims.factoryaidlservice-V1-ndk',
+        'vendor.qti.ims.imscmaidlservice-V1-ndk',
+        'vendor.qti.ims.rcssipaidlservice-V1-ndk',
+        'vendor.qti.ims.rcsuceaidlservice-V1-ndk',
+        'vendor.qti.ims.uceaidlservice-V1-ndk',
+        'vendor.qti.hardware.cacertaidlservice-V1-ndk',
+        'vendor.qti.latencyaidlservice-V1-ndk',
+        'vendor.qti.qspmhal-V1-ndk',
     ): lib_fixup_vendor_suffix,
     (
         'libloc_socket',
@@ -195,6 +219,7 @@ blob_fixups: blob_fixups_user_type = {
         blob_fixup().regex_replace(r'\bNtCamAlgoCapacity\b', 'CameraServiceCapacity')
     ),
     'vendor/lib64/libntcamextened.so': blob_fixup()
+        .replace_needed('libntcamera2ndk_vendor_v1.so', 'libntcamera2ndk_vendor_v3.so')
         .add_needed('libcamhidl_shim.so')
         .binary_regex_replace(b'ACameraManager_getCameraIdList', b'ACameraManager_getCameraIdShim'),
     'vendor/lib64/libntofflinepostproc.so': blob_fixup()
