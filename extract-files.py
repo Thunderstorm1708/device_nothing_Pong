@@ -273,13 +273,6 @@ blob_fixups: blob_fixups_user_type = {
     'vendor/lib64/vendor.qti.hardware.camera.aon@1.0-service-impl.so': blob_fixup()
         .add_needed('libcamhidl_shim.so')
         .binary_regex_replace(b'11IAONService17registerAsService', b'11IAONService17registerAsShimSvc'),
-    'system_ext/lib64/libwfdservice.so': blob_fixup()
-        .replace_needed('android.media.audio.common.types-V4-cpp.so', 'android.media.audio.common.types-V5-cpp.so'),
-    ('vendor/bin/poweropt-service', 'vendor/lib64/hw/libaudioeffecthal.qti.so', 'vendor/lib64/libdpps.so', 'vendor/lib64/libsnapdragoncolor-manager.so'): blob_fixup()
-        .replace_needed('libtinyxml2.so', 'libtinyxml2-v36.so'),
-    'vendor/etc/seccomp_policy/gnss@2.0-qsap-location.policy': blob_fixup()
-        .add_line_if_missing('sched_get_priority_min: 1')
-        .add_line_if_missing('sched_get_priority_max: 1'),
     'vendor/etc/wfdconfig.xml': blob_fixup()
         .regex_replace('<M4Enable>0</M4Enable>', '<M4Enable>1</M4Enable>')
         .regex_replace('<UIBCValid>0</UIBCValid>', '<UIBCValid>1</UIBCValid>')
@@ -287,21 +280,8 @@ blob_fixups: blob_fixups_user_type = {
     ('vendor/lib64/hw/com.qti.chi.override.so', 'vendor/lib64/camera/components/com.qti.node.dewarp.so'): blob_fixup()
         .replace_needed('android.hardware.camera.common-V2-ndk.so', 'android.hardware.camera.common-V1-ndk.so')
         .replace_needed('android.hardware.graphics.allocator-V1-ndk.so', 'android.hardware.graphics.allocator-V2-ndk.so'),
-    ('vendor/lib64/libapengine.so', 'vendor/lib64/libqti-perfd.so'): blob_fixup()
-        .replace_needed('vendor.qti.hardware.display.config-V5-ndk.so', 'vendor.qti.hardware.display.config-V12-ndk.so'),
-    ('vendor/lib64/libcwb_qcom_aidl.so', 'vendor/lib64/libsdmclient.so'): blob_fixup()
-        .replace_needed('vendor.qti.hardware.display.config-V11-ndk.so', 'vendor.qti.hardware.display.config-V12-ndk.so'),
-    'vendor/lib64/libqcodec2_core.so': blob_fixup()
-        .replace_needed('android.hardware.graphics.common-V5-ndk.so', 'android.hardware.graphics.common-V7-ndk.so'),
     'vendor/lib64/libwfdmmsrc_proprietary.so': blob_fixup()
         .replace_needed('android.media.audio.common.types-V2-ndk.so', 'android.media.audio.common.types-V3-ndk.so'),
-    'vendor/lib64/libaudioserviceexampleimpl.so': blob_fixup()
-        .add_needed('libaudioutils_shim.so')
-        .add_needed('libbluetooth_audio_session_aidl_shim.so')
-        .binary_regex_replace(
-            b'BluetoothAudioSession14GetAudioConfigEv',
-            b'BluetoothAudioSession14GetAudioConfV4Ev',
-        ),
 }  # fmt: skip
 
 module = ExtractUtilsModule(
