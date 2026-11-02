@@ -210,6 +210,12 @@ on early-boot && property:persist.vendor.pcie.boot_option=*
     write /sys/bus/platform/devices/1c08000.qcom,pcie/debug/boot_option ${persist.vendor.pcie.boot_option}
 
 on property:sys.boot_completed=1
+    # Metroid's gatekeeper opens its keymaster TA session at start, and a session opened
+    # while other TAs load at early boot fails every verify with -22 until restarted.
+    # gatekeeperd binds the HAL once and never reconnects, so it has to follow.
+    restart vendor.gatekeeper_default
+    restart gatekeeperd
+
     # Charge
     chown system system /sys/class/qcom-battery/wls_en
     chmod 0666 /sys/class/qcom-battery/wls_en
