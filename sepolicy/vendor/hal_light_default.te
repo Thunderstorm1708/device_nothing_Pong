@@ -1,2 +1,6 @@
 allow hal_light_default sysfs_leds:dir search;
 allow hal_light_default sysfs_leds:file rw_file_perms;
+
+# The Glyph LEDs (led_strips)
+allow hal_light_default sysfs_led_strips:dir search;
+allow hal_light_default sysfs_led_strips:file rw_file_perms;

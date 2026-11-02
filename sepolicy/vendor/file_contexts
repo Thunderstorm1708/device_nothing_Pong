@@ -57,8 +57,7 @@
 
 # 6.12 kernel (from the AOSPA phone2 tree)
 /data/vendor/goodix(/.*)?                                                                          u:object_r:fingerprint_vendor_data_file:s0
-/sys/devices/platform/soc/994000.i2c/i2c-0/0-003a/leds/led_strips(/.*)?                            u:object_r:sysfs_leds:s0
-/sys/devices/platform/soc/9c0000.qcom,qupv3_0_geni_se/994000.i2c/i2c-0/0-003a/leds/led_strips(/.*)? u:object_r:sysfs_leds:s0
+/sys/devices/platform/soc/9c0000.qcom,qupv3_0_geni_se/994000.i2c/i2c-0/0-003a/leds/led_strips(/.*)? u:object_r:sysfs_led_strips:s0
 /vendor/bin/hw/android\.hardware\.light-service\.glyph                                            u:object_r:hal_light_default_exec:s0
 /vendor/bin/hw/android\.hardware\.nfc2-service\.nxp                                                   u:object_r:hal_nfc_default_exec:s0
 /vendor/bin/hw/android\.hardware\.sensors-service\.phone2-multihal                      u:object_r:hal_sensors_default_exec:s0
