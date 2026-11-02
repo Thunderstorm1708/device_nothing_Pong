@@ -1830,6 +1830,7 @@ vendor/lib64/libgnsspps.so
 vendor/lib64/libgps.utils.so
 vendor/lib64/libloc_base_util.so
 vendor/lib64/libloc_core.so
+vendor/lib64/liblocation_api.so
 vendor/lib64/libloc_socket.so
 vendor/lib64/libmmosal_vendor.so
 vendor/lib64/libsdm-color.so
