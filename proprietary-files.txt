@@ -857,6 +857,7 @@ vendor/bin/pd-mapper
 vendor/bin/qrtr-cfg
 vendor/bin/qrtr-lookup
 vendor/bin/qrtr-ns
+vendor/lib64/libqrtr.so
 vendor/etc/init/ipa_fws.rc
 vendor/etc/seccomp_policy/modemManager.policy
 vendor/etc/seccomp_policy/qti-systemd.policy
