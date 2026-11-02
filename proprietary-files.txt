@@ -1128,7 +1128,7 @@ vendor/firmware/novatek_spi_fw.bin
 
 # Vibrator
 odm/etc/aac_richtap.config
-vendor/bin/hw/vendor.qti.hardware.vibrator.service;MODULE_SUFFIX=_pong
+vendor/bin/hw/vendor.qti.hardware.vibrator.service
 vendor/etc/init/vendor.qti.hardware.vibrator.service.rc
 vendor/etc/richtapresources/default/click.he
 vendor/etc/richtapresources/default/double_click.he

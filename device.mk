@@ -557,6 +557,10 @@ PRODUCT_PRODUCT_PROPERTIES += \
     persist.sys.fuse.passthrough.enable=true
 
 # Vibrator (stock QTI service with the Richtap effect library, from the blobs)
+# Keep LineageOS' source QTI vibrator out of soong: its service, init script
+# and vintf manifest install to the paths of the stock ones
+PRODUCT_SOURCE_ROOT_DIRS += -vendor/qcom/opensource/vibrator
+
 PRODUCT_COPY_FILES += \
     vendor/qcom/opensource/vibrator/excluded-input-devices.xml:$(TARGET_COPY_OUT_VENDOR)/etc/excluded-input-devices.xml
 
