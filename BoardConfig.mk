@@ -117,6 +117,13 @@ TARGET_KERNEL_MIXED_MODE := false
 TARGET_KERNEL_EXT_MODULE_ROOT := kernel/nothing/sm8475-modules
 TARGET_KERNEL_EXT_MODULES := build
 
+# The generated kernel headers hold only the kernel's own uapi: the display
+# HAL needs the uapi headers of the techpacks, whose header libraries stay in
+# the modules repository's soong namespace
+TARGET_BOARD_KERNEL_HEADERS := \
+    $(TARGET_KERNEL_EXT_MODULE_ROOT)/qcom/opensource/display-drivers/include/uapi \
+    $(TARGET_KERNEL_EXT_MODULE_ROOT)/qcom/opensource/securemsm-kernel/smmu-proxy/include/uapi
+
 # Kernel modules
 BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(DEVICE_PATH)/configs/kernel/modules.blocklist
 BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/configs/kernel/modules.load))
