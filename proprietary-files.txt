@@ -1837,6 +1837,7 @@ vendor/lib64/libsdm-color.so
 vendor/lib64/libsynergy_loc_api.so
 vendor/lib64/libtinyxml2_1.so
 vendor/lib64/qti.video.utils.videobufferlayout.so
+vendor/lib64/vendor.qti.hardware.fm-V1-ndk.so
 vendor/lib64/vendor.qti.hardware.fm@1.0.so
 
 # Libraries AOSPA ships (vendor/qcom/common) - from Sony Xperia 10 VII (ELBE, LineageOS 24.0)
