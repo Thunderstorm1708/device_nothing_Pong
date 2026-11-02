@@ -459,6 +459,11 @@ PRODUCT_COPY_FILES += \
 BOARD_SHIPPING_API_LEVEL := 202404
 PRODUCT_SHIPPING_API_LEVEL := 32
 
+# The 6.12 kernel is matched by the 202504 kernel FCM (see manifest_cape.xml).
+# Its config isn't a stock GKI build, so don't fail the build on config
+# requirements of the kernel matrices.
+PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
+
 # Sku properties
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/sku/build_CAPE.prop:$(TARGET_COPY_OUT_ODM)/etc/build_CAPE.prop \

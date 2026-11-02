@@ -1837,7 +1837,8 @@ vendor/lib64/libqspm-mem-utils-vendor.so
 vendor/lib64/vendor.qti.hardware.fm-V1-ndk.so
 vendor/lib64/vendor.qti.qspmhal-V1-ndk.so;MODULE_SUFFIX=_vendor
 
-# Location core (newer loc_util API the Nothing Phone (3) GNSS blobs need) - from Sony Xperia 10 VII (ELBE, LineageOS 24.0)
+# Location core (AOSPA builds it from location.lnx.10.0) - from Nothing Phone (3) Metroid C5.0-260819-1642,
+# its stock vendor image as archived by spike0en/nothing_archive, the build of the GNSS blobs above
 vendor/lib64/libgnsspps.so
 vendor/lib64/libgps.utils.so
 vendor/lib64/libloc_base_util.so
