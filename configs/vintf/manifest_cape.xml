@@ -1,5 +1,4 @@
-<manifest version="1.0" type="device" target-level="202404">
-    <kernel target-level="202504"/>
+<manifest version="1.0" type="device" target-level="7">
     <hal format="aidl">
         <name>android.hardware.gatekeeper</name>
         <fqname>IGatekeeper/default</fqname>
