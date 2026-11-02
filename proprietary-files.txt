@@ -883,6 +883,7 @@ vendor/lib64/libqmi_client_qmux.so
 # NFC
 vendor/etc/init/init.Pong.nfc.rc
 vendor/etc/init/init.Pong.se.rc
+system/framework/com.nxp.nfc.jar
 vendor/etc/permissions/com.nxp.nfc.xml
 vendor/etc/libnfc-nci.conf
 vendor/etc/libnfc-nxp.conf
