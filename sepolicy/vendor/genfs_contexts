@@ -54,7 +54,6 @@ genfscon sysfs /module/qcom_stats/soc_sleep/nt_rpmh_stats      u:object_r:sysfs_
 genfscon sysfs /devices/platform/soc/8c0000.qcom,qupv3_2_geni_se/88c000.i2c/i2c-3/3-005a/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/9c0000.qcom,qupv3_0_geni_se/994000.i2c/i2c-0/0-003a/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a84000.i2c/i2c-1/1-0028/wakeup u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/soc/1c00000.pcie/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/1c00000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/mhi_1103_00.01.00/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/9c0000.qcom,qupv3_0_geni_se/994000.i2c/i2c-0/0-003a/leds/led_strips u:object_r:sysfs_led_strips:s0
 genfscon sysfs /devices/virtual/misc/fastrpc-adsp/wakeup u:object_r:sysfs_wakeup:s0
