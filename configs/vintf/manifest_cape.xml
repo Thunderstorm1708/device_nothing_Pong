@@ -3,6 +3,12 @@
         <name>android.hardware.gatekeeper</name>
         <fqname>IGatekeeper/default</fqname>
     </hal>
+    <!-- secure element (qcrilNrd's SecureElementService) -->
+    <hal format="aidl">
+        <name>android.hardware.secure_element</name>
+        <fqname>ISecureElement/SIM1</fqname>
+        <fqname>ISecureElement/SIM2</fqname>
+    </hal>
     <hal format="aidl">
         <name>vendor.qti.hardware.camera.postproc</name>
         <version>2</version>
