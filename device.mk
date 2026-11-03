@@ -605,3 +605,9 @@ ifeq ($(TARGET_USE_REMOVEPACKAGE),true)
 PRODUCT_PACKAGES += \
     RemovePackages
 endif
+
+# TEMPORARY (boot bring-up): keep only warnings and errors in the log so the
+# 1 MB pstore pmsg buffer still holds the display composer's errors after
+# the framework has started. Remove once the ROM boots to the UI.
+PRODUCT_SYSTEM_PROPERTIES += \
+    log.tag=W
