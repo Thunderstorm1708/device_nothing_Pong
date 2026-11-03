@@ -610,4 +610,10 @@ endif
 # 1 MB pstore pmsg buffer still holds the display composer's errors after
 # the framework has started. Remove once the ROM boots to the UI.
 PRODUCT_SYSTEM_PROPERTIES += \
-    log.tag=W
+    log.tag=W \
+    log.tag.SDM=V
+
+# TEMPORARY (boot bring-up): let the display composer explain why frames
+# are rejected (NOT_VALIDATED is returned without any message otherwise).
+PRODUCT_VENDOR_PROPERTIES += \
+    vendor.display.enable_verbose_log=1
