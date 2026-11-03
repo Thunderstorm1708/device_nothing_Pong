@@ -70,9 +70,9 @@ DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml
 
 DEVICE_MATRIX_FILE := hardware/qcom-caf/common/compatibility_matrix_aidl.xml
+# The audio services fragment is installed by libaudiocorehal.qti.
 DEVICE_MANIFEST_FILE += \
-    $(DEVICE_PATH)/configs/vintf/manifest_cape.xml \
-    hardware/qcom-caf/sm8450-6.6/audio/primary-hal/configs/parrot/manifest_audio_qti_services.xml
+    $(DEVICE_PATH)/configs/vintf/manifest_cape.xml
 
 # Kernel
 BOARD_BOOTCONFIG := \
