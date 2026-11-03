@@ -204,6 +204,10 @@ PRODUCT_PACKAGES += \
     vendor.qti.hardware.display.snapalloc-impl \
     vendor.qti.hardware.memtrack-service
 
+# SnapAlloc reads its format and alignment tables from /vendor/etc/display
+PRODUCT_COPY_FILES += \
+    $(call find-copy-subdir-files,*.json,hardware/qcom-caf/sm8450-6.6/display/core/snapalloc/resources,$(TARGET_COPY_OUT_VENDOR)/etc/display)
+
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml
 
