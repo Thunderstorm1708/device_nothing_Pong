@@ -45,6 +45,9 @@ PRODUCT_PACKAGES += \
     libagmipcservice \
     libaudio_aidl_conversion_common_ndk \
     libaudiochargerlistener \
+    libaudiocorehal.default \
+    libaudiocorehal.qti \
+    libaudioeffecthal.qti \
     libbatterylistener \
     libfmpal \
     libhfp_pal \

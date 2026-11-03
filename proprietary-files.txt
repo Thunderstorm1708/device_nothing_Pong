@@ -1851,3 +1851,8 @@ vendor/lib64/libsynergy_loc_api.so
 vendor/bin/init.qti.kernel.sh
 vendor/bin/vendor_modprobe.sh
 vendor/etc/init/hw/init.qti.kernel.rc
+
+# Display (composer memory and QRTR clients) - from Nothing Phone (2) stock
+vendor/lib64/libmemutils.so
+vendor/lib64/libqrtrclient.so
+vendor/lib64/libvmmem.so
