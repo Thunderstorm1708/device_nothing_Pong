@@ -120,34 +120,10 @@ persist.vendor.dpm.vndr.idletimer.mode=default
 # Display
 persist.sys.sf.native_mode=260
 persist.sys.sf.color_mode=0
-vendor.display.comp_mask=0
-vendor.display.disable_3d_adaptive_tm=1
 debug.sf.frame_rate_multiple_threshold=120
-vendor.display.disable_content_fps_hint=0
-vendor.display.disable_excl_rect=0
-vendor.display.disable_excl_rect_partial_fb=1
-vendor.display.disable_hw_recovery_dump=1
-vendor.display.disable_noise_layer=1
-vendor.display.disable_offline_rotator=1
-vendor.display.disable_scaler=0
-vendor.display.disable_sdr_dimming=1
-vendor.display.disable_sdr_histogram=1
-vendor.display.disable_spec_fence=1
-vendor.display.disable_stc_dimming=1
-vendor.display.disable_system_load_check=1
-vendor.display.enable_async_powermode=0
-vendor.display.enable_async_vds_creation=1
-vendor.display.enable_dpps_dynamic_fps=1
-vendor.display.enable_display_extensions=1
-vendor.display.enable_early_wakeup=1
-vendor.display.enable_hdr10_gpu_target=1
-vendor.display.enable_ic_hw_roundedcorner=1
-vendor.display.enable_optimize_refresh=0
-vendor.display.enable_rc_support=1
-vendor.display.enable_rounded_corner=1
-vendor.display.use_layer_ext=1
-vendor.display.use_smooth_motion=1
-vendor.display.vds_allow_hwc=1
+# Always validate before present; the 6.12 display stack otherwise
+# rejected every frame with NOT_VALIDATED during bring-up.
+vendor.display.disable_skip_validate=1
 vendor.gralloc.disable_ubwc=0
 
 # DRM
