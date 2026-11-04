@@ -8,10 +8,6 @@
     <!-- Indicates that bridged AP mode is supported on this device -->
     <bool name="config_wifiBridgedSoftApSupported">false</bool>
 
-    <!-- The 6.12 qca6490 firmware crashes (and restarts every few seconds) as soon
-         as a 2.4 GHz SoftAP comes up; 5 GHz works, so offer only 5 GHz -->
-    <bool name="config_wifiSoftap24ghzSupported">false</bool>
-
     <!-- Enable concurrent peer to peer + internet connectivity
          Note: this is conditional on the device supporting dual concurrent STAs. -->
     <bool name="config_wifiMultiStaLocalOnlyConcurrencyEnabled">true</bool>
