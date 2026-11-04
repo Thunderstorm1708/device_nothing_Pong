@@ -1876,3 +1876,15 @@ vendor/lib64/libsnapdragoncolor-manager.so
 vendor/lib64/libsnapdragoncolor-qdcm.so
 vendor/lib64/libtestutils.so
 vendor/lib64/libvmfilexfer.so
+
+# IMS / QTI telephony (system_ext) - from Nothing Phone (3) Metroid C5.0-260819-1642
+system_ext/etc/permissions/qcrilhook.xml
+system_ext/etc/permissions/qti_permissions.xml
+system_ext/etc/permissions/telephony_system-ext_privapp-permissions-qti.xml
+system_ext/etc/sysconfig/qti_telephony_system_packages_config.xml
+system_ext/etc/sysconfig/qti_whitelist_system_ext.xml
+system_ext/framework/qcrilhook.jar
+system_ext/lib64/libimsmedia_jni.so;SYMLINK=system_ext/priv-app/ims/lib/arm64/libimsmedia_jni.so
+system_ext/priv-app/QtiTelephony/QtiTelephony.apk
+system_ext/priv-app/ims/ims.apk
+system_ext/priv-app/qcrilmsgtunnel/qcrilmsgtunnel.apk
