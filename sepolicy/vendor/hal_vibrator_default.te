@@ -1,1 +1,6 @@
 allow hal_vibrator_default aac_richtap_device:chr_file rw_file_perms;
+# The stock service reaches the AW8692x LED device through /sys/class/leds
+allow hal_vibrator_default sysfs:dir search;
+allow hal_vibrator_default sysfs:lnk_file read;
+allow hal_vibrator_default sysfs_vibrator:dir r_dir_perms;
+allow hal_vibrator_default sysfs_vibrator:file rw_file_perms;
