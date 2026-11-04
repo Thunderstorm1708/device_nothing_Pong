@@ -47,6 +47,6 @@
 
     <!-- Indicates that STA + bridged AP concurrency mode is supported on this device provided
          that the device interface combination allows for it-->
-    <bool translatable="false" name="config_wifiStaWithBridgedSoftApConcurrencySupported">true</bool>
+    <bool translatable="false" name="config_wifiStaWithBridgedSoftApConcurrencySupported">false</bool>
 
 </resources>

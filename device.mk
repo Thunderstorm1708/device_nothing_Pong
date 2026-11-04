@@ -605,23 +605,3 @@ ifeq ($(TARGET_USE_REMOVEPACKAGE),true)
 PRODUCT_PACKAGES += \
     RemovePackages
 endif
-
-# TEMPORARY (boot bring-up): keep only warnings and errors in the log so the
-# 1 MB pstore pmsg buffer still holds the display composer's errors after
-# the framework has started. Remove once the ROM boots to the UI.
-PRODUCT_SYSTEM_PROPERTIES += \
-    log.tag.SDM=V
-
-# TEMPORARY (boot bring-up): save the full logcat to /data/misc/logd (readable
-# from recovery) and keep adb usable while the UI is not up yet.
-PRODUCT_PRODUCT_PROPERTIES += \
-    persist.logd.logpersistd=logcatd \
-    persist.logd.logpersistd.buffer=all \
-    persist.logd.logpersistd.size=64 \
-    persist.sys.usb.config=adb \
-    ro.adb.secure=0
-
-# TEMPORARY (boot bring-up): let the display composer explain why frames
-# are rejected (NOT_VALIDATED is returned without any message otherwise).
-PRODUCT_VENDOR_PROPERTIES += \
-    vendor.display.enable_verbose_log=1

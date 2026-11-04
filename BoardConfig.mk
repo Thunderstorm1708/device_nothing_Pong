@@ -58,6 +58,7 @@ TARGET_DTB_LIST_WILDCARD := \
     vendor/qcom/capep
 
 # Display
+SOONG_CONFIG_qtidisplay += udfps
 SOONG_CONFIG_qtidisplay_udfps := true
 TARGET_SCREEN_DENSITY := 420
 
