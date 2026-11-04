@@ -610,8 +610,16 @@ endif
 # 1 MB pstore pmsg buffer still holds the display composer's errors after
 # the framework has started. Remove once the ROM boots to the UI.
 PRODUCT_SYSTEM_PROPERTIES += \
-    log.tag=W \
     log.tag.SDM=V
+
+# TEMPORARY (boot bring-up): save the full logcat to /data/misc/logd (readable
+# from recovery) and keep adb usable while the UI is not up yet.
+PRODUCT_PRODUCT_PROPERTIES += \
+    persist.logd.logpersistd=logcatd \
+    persist.logd.logpersistd.buffer=all \
+    persist.logd.logpersistd.size=64 \
+    persist.sys.usb.config=adb \
+    ro.adb.secure=0
 
 # TEMPORARY (boot bring-up): let the display composer explain why frames
 # are rejected (NOT_VALIDATED is returned without any message otherwise).
