@@ -7,6 +7,20 @@
 # LEDs
 /dev/led_strips             0660   system       system
 
+# Vibrator (AW86927): richtap node and LED class attributes, written by
+# the vibrator service running as system
+/dev/aw86927_haptic           0660   system       system
+/sys/class/leds/aw_vibrator   activate        0660   system  system
+/sys/class/leds/aw_vibrator   activate_mode   0660   system  system
+/sys/class/leds/aw_vibrator   duration        0660   system  system
+/sys/class/leds/aw_vibrator   state           0660   system  system
+/sys/class/leds/aw_vibrator   index           0660   system  system
+/sys/class/leds/aw_vibrator   gain            0660   system  system
+/sys/class/leds/aw_vibrator   vmax            0660   system  system
+/sys/class/leds/aw_vibrator   seq             0660   system  system
+/sys/class/leds/aw_vibrator   loop            0660   system  system
+/sys/class/leds/aw_vibrator   rtp             0660   system  system
+
 # NFC
 /dev/pn553    0660    nfc               nfc
 
