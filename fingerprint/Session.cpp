@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include <atomic>
 #include <chrono>
 #include <string>
 #include <thread>
@@ -22,22 +23,62 @@ namespace {
 constexpr char kForceFodUiPath[] =
         "/sys/devices/platform/soc/soc:qcom,dsi-display-primary/force_fod_ui";
 constexpr char kFodUiPath[] = "/sys/devices/platform/soc/soc:qcom,dsi-display-primary/fod_ui";
-constexpr auto kFodUiTimeout = std::chrono::milliseconds(100);
+constexpr auto kFodUiTimeout = std::chrono::milliseconds(300);
+// One frame at 60 Hz, so the lit dot is on the panel before the sensor reads.
+constexpr auto kIlluminationSettle = std::chrono::milliseconds(17);
+// Start the capture anyway if SystemUI never reports the UI as ready.
+constexpr auto kUiReadyFallback = std::chrono::milliseconds(300);
 
-void waitForFodUi() {
+std::atomic<bool> sPointerDown{false};
+std::atomic<bool> sCaptureStarted{false};
+std::atomic<uint32_t> sPointerSeq{0};
+
+bool waitForFodUi() {
     auto deadline = std::chrono::steady_clock::now() + kFodUiTimeout;
     std::string value;
     while (std::chrono::steady_clock::now() < deadline) {
-        if (::android::base::ReadFileToString(kFodUiPath, &value) && value[0] == '1') return;
+        if (!sPointerDown) return false;
+        if (::android::base::ReadFileToString(kFodUiPath, &value) && value[0] == '1') return true;
         std::this_thread::sleep_for(std::chrono::milliseconds(4));
     }
     ALOGW("FOD illumination not ready after %lld ms", (long long)kFodUiTimeout.count());
+    return sPointerDown;
+}
+
+// Capture only once the illumination dot is drawn and the panel is in FOD
+// HBM: reading the optical sensor earlier gives an unlit image, which the
+// Goodix TA rejects with GF_ERROR_PREPROCESS_FAILED.
+void startCapture(fingerprint_device_t* device) {
+    if (!waitForFodUi()) return;
+    std::this_thread::sleep_for(kIlluminationSettle);
+    if (!sPointerDown || sCaptureStarted.exchange(true)) return;
+    device->goodixExtCmd(device, 1, 0);
+}
+
+void pointerDown(fingerprint_device_t* device) {
+    sCaptureStarted = false;
+    sPointerDown = true;
+    uint32_t seq = ++sPointerSeq;
+    ::android::base::WriteStringToFile("1", kForceFodUiPath);
+    std::thread([device, seq] {
+        std::this_thread::sleep_for(kUiReadyFallback);
+        if (sPointerDown && seq == sPointerSeq && !sCaptureStarted) {
+            ALOGW("No onUiReady after %lld ms, capturing anyway",
+                  (long long)kUiReadyFallback.count());
+            startCapture(device);
+        }
+    }).detach();
 }
 
 void setFingerDown(fingerprint_device_t* device, bool down) {
-    ::android::base::WriteStringToFile(down ? "1" : "0", kForceFodUiPath);
-    if (down) waitForFodUi();
-    device->goodixExtCmd(device, down ? 1 : 0, 0);
+    if (down) {
+        pointerDown(device);
+        return;
+    }
+    sPointerDown = false;
+    ++sPointerSeq;
+    ::android::base::WriteStringToFile("0", kForceFodUiPath);
+    device->goodixExtCmd(device, 0, 0);
 }
 
 }  // namespace
@@ -165,8 +206,8 @@ ndk::ScopedAStatus Session::onPointerUp(int32_t /*pointerId*/) {
 }
 
 ndk::ScopedAStatus Session::onUiReady() {
-    // TODO: stub
-
+    ALOGI("onUiReady");
+    if (sPointerDown && !sCaptureStarted) startCapture(mDevice);
     return ndk::ScopedAStatus::ok();
 }
 
