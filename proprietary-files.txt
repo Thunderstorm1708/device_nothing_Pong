@@ -1876,6 +1876,7 @@ vendor/lib64/libsnapdragoncolor-manager.so
 vendor/lib64/libsnapdragoncolor-qdcm.so
 vendor/lib64/libtestutils.so
 vendor/lib64/libvmfilexfer.so
+vendor/etc/snapdragon_color_libs_config.xml
 
 # IMS / QTI telephony (system_ext) - from Nothing Phone (3) Metroid C5.0-260819-1642
 system_ext/etc/permissions/qcrilhook.xml
