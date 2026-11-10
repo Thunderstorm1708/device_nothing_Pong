@@ -495,7 +495,7 @@
     <!-- Vibrator pattern for feedback when selecting an hour/minute tick of a Clock -->
     <integer-array name="config_clockTickVibePattern">
         <item>0</item>
-        <item>12</item>
+        <item>30</item>
     </integer-array>
 
     <!-- Vibrator pattern for feedback when selecting a day/month/year date of a Calendar -->
