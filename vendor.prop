@@ -125,6 +125,9 @@ debug.sf.frame_rate_multiple_threshold=120
 # rejected every frame with NOT_VALIDATED during bring-up.
 vendor.display.disable_skip_validate=1
 vendor.gralloc.disable_ubwc=0
+# UDFPS: crop the illumination layer to the sensor (x,y,radius, as
+# ro.vendor.fingerprint.sensor_location) so it gets its own pipe
+vendor.display.udfps_crop=540,2186,93
 
 # DRM
 drm.service.enabled=true
