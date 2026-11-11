@@ -1828,7 +1828,6 @@ system_ext/etc/sltntc/sltntc_SM8475.conf
 vendor/lib64/libmmosal_vendor.so
 vendor/lib64/libsdm-color.so
 vendor/lib64/libtinyxml2_1.so
-vendor/lib64/qti.video.utils.videobufferlayout.so
 vendor/lib64/vendor.qti.hardware.fm@1.0.so
 
 # Libraries AOSPA ships (vendor/qcom/common) - from Sony Xperia 10 VII (ELBE, LineageOS 24.0)
@@ -1890,3 +1889,22 @@ system_ext/lib64/libimsmedia_jni.so;SYMLINK=system_ext/priv-app/ims/lib/arm64/li
 system_ext/priv-app/QtiTelephony/QtiTelephony.apk
 system_ext/priv-app/ims/ims.apk
 system_ext/priv-app/qcrilmsgtunnel/qcrilmsgtunnel.apk
+
+# Media (Codec2 video HAL) - from PenguinOS celerity 20261025, made for the 6.12 msm_vidc driver
+vendor/bin/hw/vendor.qti.media.c2@1.0-service|97d76bcffb909ae92bf8f542c6208944e533de97
+vendor/etc/init/vendor.qti.media.c2@1.0-service.rc|679867ee28cb03c5522d443f08fadc9ed6c328f6
+vendor/etc/seccomp_policy/codec2.vendor.base-arm64.policy|33d9580ad25a4b974ebd13cf3711d1fc040f9d7c
+vendor/etc/seccomp_policy/codec2.vendor.ext-arm64.policy|a134d3d5d74294ca8164056b42389b1c7dbb2b65
+vendor/etc/vintf/manifest/c2_manifest_vendor.xml|3eb285a70b313610ff44a3644734ac991aaefba8
+vendor/lib64/libqcodec2_base.so|2a82af4e0df8f06c28de1ee0d77583f8278412f6
+vendor/lib64/libqcodec2_basecodec.so|6b3f17b4438cba0465844578cd789d1eee503fa0
+vendor/lib64/libqcodec2_core.so|bf7e61764c3763107d206558f4e602dc41b85eb6
+vendor/lib64/libqcodec2_filterbase.so|e9c6b381e154a0913f19cc0bca508769a95f7263
+vendor/lib64/libqcodec2_hooks.so|d47a07227bb2180db259504a1938226adcb8ee98
+vendor/lib64/libqcodec2_imgtxrfilter.so|6437ba30cdd84856fc21ceda0a667632dcc3181c
+vendor/lib64/libqcodec2_mockfilter.so|719111ec167ec2ce551b57865ea7c4a8ac293e34
+vendor/lib64/libqcodec2_platform.so|1eaf2a8f32189bf8557dbafb974be2f1f2a70087
+vendor/lib64/libqcodec2_utils.so|e03fdfa5c9d8bfaa6a6627e8fa04d04a1dc6d052|40f612ca94f3853765c80bbf0ae08983a2091cc8
+vendor/lib64/libqcodec2_v4l2codec.so|a27f35c280ec150d0783de9edfaa4ffb54d0efe1
+vendor/lib64/libvideotxr.so|992f261ee835eb60e491a962406df0c3b6cd85cb
+vendor/lib64/qti.video.utils.videobufferlayout.so|7dbdfa5e719f01e265b0e7a4e003bd76b690ef4d

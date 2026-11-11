@@ -230,6 +230,8 @@ blob_fixups: blob_fixups_user_type = {
         .replace_needed('android.hardware.graphics.allocator-V1-ndk.so', 'android.hardware.graphics.allocator-V2-ndk.so'),
     ('vendor/lib64/libgarden.so', 'vendor/lib64/libgarden_haltests_e2e.so'): blob_fixup()
         .replace_needed('android.hardware.gnss-V1-ndk_platform.so', 'android.hardware.gnss-V1-ndk.so'),
+    'vendor/lib64/libqcodec2_utils.so': blob_fixup()
+        .add_needed('libqtimapperext_shim.so'),
     'vendor/lib64/libmorpho_video_stabilizer.so': blob_fixup()
         .add_needed('libutils.so'),
     'vendor/lib64/libwvhidl.so': blob_fixup()
