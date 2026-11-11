@@ -8,3 +8,4 @@ hal_client_domain(nt_chg, hal_health)
 rw_dir_file(nt_chg, vendor_sysfs_battery_supply)
 r_dir_file(nt_chg, vendor_sysfs_usb_supply)
 r_dir_file(nt_chg, sysfs_thermal)
+allow nt_chg vendor_sysfs_usb_supply:file w_file_perms;
