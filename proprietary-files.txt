@@ -1715,7 +1715,6 @@ vendor/lib64/libtime_genoff.so|3f571c060938e00380f83a717c90689f2a5ac6d5
 
 # Widevine DRM - from Nothing Phone (3) Metroid C5.0-260819-1642
 vendor/apex/com.google.android.widevine-12498615.apex|a35909bef639876b14831459bff5d532858267bb
-vendor/lib64/liboemcrypto.so|ef48b52894619325b1c3a7fb3613cb65577c2d5e
 
 # WiFi Display - from Nothing Phone (3) Metroid C5.0-260819-1642
 vendor/bin/wifidisplayhalservice|ef90045b5b27e9f994845b5b762335065d4741af
