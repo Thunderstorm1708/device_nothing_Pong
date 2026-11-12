@@ -205,6 +205,7 @@ ro.hardware.keystore_desede=true
 # Media
 debug.c2.use_dmabufheaps=1
 debug.stagefright.c2inputsurface=-1
+vendor.media.target_variant=_cape
 
 # NTF
 ro.vendor.nothing.feature.base=0xe24800001004458438124a040106b4247b97ffL

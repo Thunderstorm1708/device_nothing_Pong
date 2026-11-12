@@ -25,7 +25,7 @@
             // perf hints support for decoder and encoder
             "perf_control_enable": true,
             // this enables pipeline code for querying capabilities and creating codecs
-            "pipelining": true,
+            "pipelining": false,
             // this enables pre-processing pipeline
             "pre_processing_pipelining": false,
             // It is used to enable fastCV engine for flip support in the absence of VPSS hardware
@@ -135,9 +135,6 @@
             "enc_hier_b_max_temporal_layer_count": 4
         },
         // list of codec plugin libraries to be loaded into codec registry
-        "QC2CodecPlugins": [
-            "libqcodec2_imgtxrfilter.so"
-        ],
 
         // list of filters used in pre processing
         // each filter shall have properties codec_name/lib_name/input_streams/output_streams
